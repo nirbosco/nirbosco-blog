@@ -1,7 +1,7 @@
 ---
 title: "Shit Just Got Real"
 date: 2021-09-07
-category: "גל רביעי"
+category: "גל רביעי - שנה בתאילנד"
 description: "על חופשה שהופכת למציאות, חיפוש בתים בקופנגן ואיך הניצוץ נולד בגינוסר."
 image: "/images/shit just got real.jpg"
 ---
