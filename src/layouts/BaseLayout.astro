@@ -5,7 +5,7 @@ interface Props {
   image?: string;
 }
 
-const { title, description = 'הבלוג של ניר בוסקו - כתיבה, חינוך, מסעות והרהורים', image } = Astro.props;
+const { title, description = 'ניר בוסקו - איש חינוך, כותב, רדיקל-ממלכתי. על מה שצריך לשבור במערכת החינוך ועל מה שאנחנו בונים במקום.', image } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 import Header from '../components/Header.astro';
