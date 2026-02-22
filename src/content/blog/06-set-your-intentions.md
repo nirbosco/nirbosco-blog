@@ -3,6 +3,7 @@ title: "Set Your Intentions"
 date: 2021-11-01
 category: "גל רביעי"
 description: "על יוגה, שגרה חדשה, גשמים והילדים שמתחילים לדבר אנגלית."
+image: "/images/set your intentions.jpg"
 ---
 
 בשלושה שבועות האחרונים התחלתי לתרגל יוגה.
