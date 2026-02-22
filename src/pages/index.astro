@@ -14,17 +14,17 @@ const categories = [...new Set(allPosts.map((post) => post.data.category))];
   <!-- Hero -->
   <section class="max-w-6xl mx-auto px-6 pt-16 pb-12 md:pt-24 md:pb-16">
     <div class="max-w-2xl">
-      <h1 class="font-heading text-4xl md:text-6xl font-bold leading-tight mb-6">
+      <h1 class="font-heading text-5xl md:text-7xl font-bold leading-tight mb-6 animate-fade-in">
         ניר בוסקו
       </h1>
-      <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-xl">
-        איש חינוך, כותב, רדיקל-ממלכתי. כותב על מה שצריך לשבור במערכת החינוך ועל מה שאנחנו בונים במקום.
+      <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-xl animate-fade-in animate-fade-in-delay-1">
+        איש חינוך, רדיקל-ממלכתי. כותב על מה שצריך לשבור במערכת החינוך ועל מה שאנחנו בונים במקום.
       </p>
     </div>
   </section>
 
   <!-- Category filters -->
-  <section class="max-w-6xl mx-auto px-6 mb-8">
+  <section class="max-w-6xl mx-auto px-6 mb-8 animate-fade-in animate-fade-in-delay-2">
     <div class="flex flex-wrap gap-3">
       <a
         href="/"
@@ -44,7 +44,7 @@ const categories = [...new Set(allPosts.map((post) => post.data.category))];
   </section>
 
   <!-- Posts Grid -->
-  <section class="max-w-6xl mx-auto px-6 pb-20">
+  <section class="max-w-6xl mx-auto px-6 pb-20 animate-fade-in animate-fade-in-delay-3">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {allPosts.map((post) => (
         <PostCard
