@@ -22,51 +22,105 @@ const allPosts = (await getCollection('blog'))
     </div>
   </section>
 
-  <!-- Mosaic Grid -->
+  <!-- Featured Post (first one, large) -->
+  {allPosts.length > 0 && (() => {
+    const featured = allPosts[0];
+    const featuredDate = new Date(featured.data.date).toLocaleDateString('he-IL', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+    return (
+      <section class="max-w-7xl mx-auto px-6 mb-12 animate-fade-in animate-fade-in-delay-2">
+        <a href={`/blog/${featured.slug}`} class="group block">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-0">
+            {/* Image */}
+            <div class="aspect-[16/10] md:aspect-auto md:min-h-[400px] overflow-hidden bg-[var(--color-bg-card)]">
+              {featured.data.image ? (
+                <img
+                  src={featured.data.image}
+                  alt={featured.data.title}
+                  class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-accent)]/5 flex items-center justify-center">
+                  <span class="font-heading text-6xl font-bold text-[var(--color-accent)]/20">nb</span>
+                </div>
+              )}
+            </div>
+            {/* Content */}
+            <div class="p-8 md:p-12 flex flex-col justify-center bg-[var(--color-bg-card)]">
+              <div class="flex items-center gap-3 mb-4">
+                <CategoryBadge category={featured.data.category} />
+                <time datetime={featured.data.date.toISOString()} class="text-xs text-[var(--color-text-muted)]">
+                  {featuredDate}
+                </time>
+              </div>
+              <h2 class="font-heading text-2xl md:text-3xl font-bold leading-snug mb-4 group-hover:text-[var(--color-accent)] transition-colors">
+                {featured.data.title}
+              </h2>
+              {featured.data.description && (
+                <p class="text-[var(--color-text-muted)] leading-relaxed line-clamp-3">
+                  {featured.data.description}
+                </p>
+              )}
+              <span class="inline-flex items-center gap-2 mt-6 text-sm font-medium text-[var(--color-accent)]">
+                קריאה
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                </svg>
+              </span>
+            </div>
+          </div>
+        </a>
+      </section>
+    );
+  })()}
+
+  <!-- Grid -->
   <section class="max-w-7xl mx-auto px-6 pb-20 animate-fade-in animate-fade-in-delay-3">
     <div class="mosaic-grid">
-      {allPosts.map((post, i) => {
+      {allPosts.slice(1).map((post, i) => {
         const formattedDate = new Date(post.data.date).toLocaleDateString('he-IL', {
           year: 'numeric',
           month: 'short',
           day: 'numeric',
         });
 
-        const isLarge = i === 0 || i === 3 || i === 8;
-        const isMedium = i === 1 || i === 4 || i === 7;
-
-        const sizeClass = isLarge ? 'mosaic-large' : isMedium ? 'mosaic-medium' : 'mosaic-small';
+        // Alternate: every 3rd item (index 2, 5, 8...) spans 2 columns
+        const isWide = i % 3 === 2;
 
         return (
-          <a href={`/blog/${post.slug}`} class={`mosaic-item ${sizeClass} group`}>
-            {/* Image layer */}
-            {post.data.image ? (
-              <img
-                src={post.data.image}
-                alt={post.data.title}
-                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                loading="lazy"
-              />
-            ) : (
-              <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/20 to-[var(--color-accent)]/5" />
-            )}
-
-            {/* Overlay */}
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <a href={`/blog/${post.slug}`} class={`mosaic-card ${isWide ? 'mosaic-wide' : ''} group`}>
+            {/* Image */}
+            <div class={`overflow-hidden bg-[var(--color-bg-hover)] ${isWide ? 'aspect-[21/9]' : 'aspect-[16/10]'}`}>
+              {post.data.image ? (
+                <img
+                  src={post.data.image}
+                  alt={post.data.title}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div class="w-full h-full bg-gradient-to-br from-[var(--color-accent)]/15 to-[var(--color-accent)]/5 flex items-center justify-center">
+                  <span class="font-heading text-4xl font-bold text-[var(--color-accent)]/20">nb</span>
+                </div>
+              )}
+            </div>
 
             {/* Content */}
-            <div class="absolute bottom-0 right-0 left-0 p-5 md:p-6">
+            <div class="p-5">
               <div class="flex items-center gap-3 mb-2">
                 <CategoryBadge category={post.data.category} />
-                <time datetime={post.data.date.toISOString()} class="text-xs text-white/60">
+                <time datetime={post.data.date.toISOString()} class="text-xs text-[var(--color-text-muted)]">
                   {formattedDate}
                 </time>
               </div>
-              <h3 class={`font-heading font-bold leading-snug text-white group-hover:text-[var(--color-accent)] transition-colors ${isLarge ? 'text-xl md:text-2xl' : 'text-base md:text-lg'}`}>
+              <h3 class="font-heading text-lg font-semibold leading-snug group-hover:text-[var(--color-accent)] transition-colors">
                 {post.data.title}
               </h3>
-              {isLarge && post.data.description && (
-                <p class="text-sm text-white/70 mt-2 line-clamp-2 leading-relaxed">
+              {post.data.description && (
+                <p class="text-sm text-[var(--color-text-muted)] mt-2 line-clamp-2 leading-relaxed">
                   {post.data.description}
                 </p>
               )}
@@ -77,7 +131,7 @@ const allPosts = (await getCollection('blog'))
     </div>
 
     <!-- Link to all posts -->
-    <div class="mt-12 text-center">
+    <div class="mt-16 text-center">
       <a
         href="/blog"
         class="inline-flex items-center gap-2 px-6 py-3 border border-[var(--color-border)] text-sm font-medium text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
@@ -94,59 +148,39 @@ const allPosts = (await getCollection('blog'))
 <style>
   .mosaic-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3px;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   @media (min-width: 768px) {
     .mosaic-grid {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
     }
   }
 
   @media (min-width: 1024px) {
     .mosaic-grid {
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
     }
   }
 
-  .mosaic-item {
-    position: relative;
-    overflow: hidden;
+  .mosaic-card {
     display: block;
-    cursor: pointer;
+    background: var(--color-bg-card);
+    transition: all 0.3s ease;
   }
 
-  /* Small: 1x1 */
-  .mosaic-small {
-    aspect-ratio: 1 / 1;
+  .mosaic-card:hover {
+    background: var(--color-bg-hover);
+    transform: translateY(-2px);
   }
 
-  /* Medium: 1 col, taller */
-  .mosaic-medium {
-    aspect-ratio: 3 / 4;
-  }
-
-  /* Large: spans 2 cols and 2 rows */
-  .mosaic-large {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  /* On mobile, large just takes full width */
-  @media (max-width: 767px) {
-    .mosaic-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .mosaic-large {
+  /* Wide cards span 2 columns on tablet+ */
+  @media (min-width: 768px) {
+    .mosaic-wide {
       grid-column: span 2;
-      grid-row: span 1;
-      aspect-ratio: 16 / 10;
-    }
-
-    .mosaic-medium {
-      aspect-ratio: 1 / 1;
     }
   }
 </style>
