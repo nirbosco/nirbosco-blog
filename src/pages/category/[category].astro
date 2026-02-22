@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('blog');
+  const categories = [...new Set(allPosts.map((post) => post.data.category))];
+
+  return categories.map((category) => ({
+    params: { category },
+    props: {
+      category,
+      posts: allPosts
+        .filter((post) => post.data.category === category && !post.data.draft)
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { category, posts } = Astro.props;
+const allCategories = [...new Set((await getCollection('blog')).map((p) => p.data.category))];
+---
+
+<BaseLayout title={`${category} | ניר בוסקו`} description={`פוסטים בקטגוריה: ${category}`}>
+  <section class="max-w-6xl mx-auto px-6 pt-12 pb-8 md:pt-16">
+    <a href="/blog" class="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors mb-6 text-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      כל הפוסטים
+    </a>
+
+    <h1 class="font-heading text-3xl md:text-4xl font-bold mb-4">{category}</h1>
+    <p class="text-[var(--color-text-muted)] mb-8">{posts.length} פוסטים בקטגוריה הזו</p>
+
+    <!-- Category filters -->
+    <div class="flex flex-wrap gap-3 mb-10">
+      <a
+        href="/blog"
+        class="px-4 py-2 rounded-full text-sm font-medium border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-colors"
+      >
+        הכל
+      </a>
+      {allCategories.map((cat) => (
+        <a
+          href={`/category/${encodeURIComponent(cat)}`}
+          class:list={[
+            'px-4 py-2 rounded-full text-sm font-medium transition-colors',
+            cat === category
+              ? 'bg-[var(--color-accent)] text-white'
+              : 'border border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]',
+          ]}
+        >
+          {cat}
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Posts Grid -->
+  <section class="max-w-6xl mx-auto px-6 pb-20">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          slug={post.slug}
+          date={post.data.date}
+          category={post.data.category}
+          description={post.data.description}
+          image={post.data.image}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

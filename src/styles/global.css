@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #0a0a0a;
+    --color-bg-card: #151515;
+    --color-bg-hover: #1a1a1a;
+    --color-text: #e5e5e5;
+    --color-text-muted: #737373;
+    --color-accent: #c084fc;
+    --color-accent-hover: #a855f7;
+    --color-border: #262626;
+  }
+
+  .light {
+    --color-bg: #fafafa;
+    --color-bg-card: #ffffff;
+    --color-bg-hover: #f5f5f5;
+    --color-text: #171717;
+    --color-text-muted: #525252;
+    --color-accent: #9333ea;
+    --color-accent-hover: #7e22ce;
+    --color-border: #e5e5e5;
+  }
+
+  html {
+    font-family: 'Heebo', sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  ::selection {
+    background-color: rgba(192, 132, 252, 0.3);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .post-card {
+    @apply bg-[var(--color-bg-card)] rounded-2xl overflow-hidden transition-all duration-300;
+  }
+
+  .post-card:hover {
+    @apply -translate-y-1;
+    background-color: var(--color-bg-hover);
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
+  }
+
+  .category-badge {
+    @apply inline-block px-3 py-1 rounded-full text-xs font-medium tracking-wide;
+  }
+
+  .category-badge[data-category="גל רביעי"] {
+    @apply bg-blue-500/10 text-blue-400;
+  }
+
+  .light .category-badge[data-category="גל רביעי"] {
+    @apply bg-blue-500/10 text-blue-600;
+  }
+
+  .category-badge[data-category="טיפים"] {
+    @apply bg-emerald-500/10 text-emerald-400;
+  }
+
+  .light .category-badge[data-category="טיפים"] {
+    @apply bg-emerald-500/10 text-emerald-600;
+  }
+
+  .category-badge[data-category="טורים"] {
+    @apply bg-amber-500/10 text-amber-400;
+  }
+
+  .light .category-badge[data-category="טורים"] {
+    @apply bg-amber-500/10 text-amber-600;
+  }
+
+  .category-badge[data-category="מאמרים"] {
+    @apply bg-rose-500/10 text-rose-400;
+  }
+
+  .light .category-badge[data-category="מאמרים"] {
+    @apply bg-rose-500/10 text-rose-600;
+  }
+
+  .nav-link {
+    @apply relative text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors duration-200;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute bottom-0 right-0 w-0 h-0.5 bg-[var(--color-accent)] transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  /* Light mode prose overrides */
+  .light .prose {
+    --tw-prose-body: #374151;
+    --tw-prose-headings: #111827;
+    --tw-prose-links: #9333ea;
+    --tw-prose-bold: #111827;
+    --tw-prose-quotes: #6b7280;
+    --tw-prose-quote-borders: #9333ea;
+    --tw-prose-hr: #e5e5e5;
+  }
+}
