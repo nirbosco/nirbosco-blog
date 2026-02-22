@@ -1,0 +1,249 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import CategoryBadge from '../components/CategoryBadge.astro';
+
+interface Props {
+  title: string;
+  date: Date;
+  category: string;
+  description?: string;
+  image?: string;
+  author?: string;
+  authorBio?: string;
+}
+
+const {
+  title,
+  date,
+  category,
+  description,
+  image,
+  author = 'ניר בוסקו',
+  authorBio
+} = Astro.props;
+
+const formattedDate = new Date(date).toLocaleDateString('he-IL', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={`${title} | ניר בוסקו`} description={description} image={image}>
+  <article class="article-layout">
+    <!-- Back link -->
+    <div class="max-w-5xl mx-auto px-6 pt-12 md:pt-20">
+      <a href="/blog" class="inline-flex items-center gap-2 text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        חזרה לבלוג
+      </a>
+    </div>
+
+    <!-- Article Header - Full Width -->
+    <header class="max-w-5xl mx-auto px-6 mt-8 mb-12">
+      <div class="flex items-center gap-4 mb-6">
+        <CategoryBadge category={category} />
+        <time datetime={date.toISOString()} class="text-sm text-[var(--color-text-muted)]">
+          {formattedDate}
+        </time>
+      </div>
+      <h1 class="font-heading text-3xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+        {title}
+      </h1>
+      {description && (
+        <p class="text-lg md:text-xl text-[var(--color-text-muted)] leading-relaxed max-w-3xl">
+          {description}
+        </p>
+      )}
+      <div class="flex items-center gap-3 mt-6 text-sm text-[var(--color-text-muted)]">
+        <span>מאת {author}</span>
+      </div>
+    </header>
+
+    <!-- Featured Image - Full Bleed -->
+    {image && (
+      <div class="max-w-6xl mx-auto px-6 mb-16">
+        <div class="rounded-2xl overflow-hidden">
+          <img src={image} alt={title} class="w-full h-auto" />
+        </div>
+      </div>
+    )}
+
+    <!-- Article Body - Two Column Layout -->
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="article-grid">
+        <!-- Main Content Column -->
+        <div class="article-content prose prose-lg max-w-none">
+          <slot />
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Footer -->
+    <footer class="max-w-5xl mx-auto px-6 mt-16 pb-20">
+      {authorBio && (
+        <div class="author-bio-box">
+          <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{authorBio}</p>
+        </div>
+      )}
+      <div class="pt-8 border-t border-[var(--color-border)]">
+        <a href="/blog" class="inline-flex items-center gap-2 text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] transition-colors font-medium">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          כל הפוסטים
+        </a>
+      </div>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  /* Article Grid - wider than regular posts */
+  .article-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    .article-grid {
+      grid-template-columns: 1fr;
+      max-width: 72ch;
+    }
+  }
+
+  /* Author Bio Box */
+  .author-bio-box {
+    background: var(--color-bg-card);
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    margin-bottom: 2rem;
+    border-right: 3px solid var(--color-accent);
+  }
+
+  /* Article-specific prose enhancements */
+  .article-content :global(h2) {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .article-content :global(h2:first-of-type) {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  /* Pullquote style for blockquotes in articles */
+  .article-content :global(blockquote) {
+    border-inline-start: 3px solid var(--color-accent);
+    padding: 1.5rem 2rem;
+    margin: 2.5rem 0;
+    background: var(--color-bg-card);
+    border-radius: 0 1rem 1rem 0;
+    font-size: 1.15rem;
+    line-height: 1.8;
+  }
+
+  :global(.light) .article-content :global(blockquote) {
+    background: #f8f5ff;
+  }
+
+  /* Key sentences - bold paragraphs get special treatment */
+  .article-content :global(p > strong:only-child),
+  .article-content :global(p > strong:first-child:last-child) {
+    display: block;
+    font-size: 1.2rem;
+    line-height: 1.7;
+    color: var(--color-accent);
+    padding: 1rem 0;
+  }
+
+  :global(.light) .article-content :global(p > strong:only-child),
+  :global(.light) .article-content :global(p > strong:first-child:last-child) {
+    color: var(--color-accent);
+  }
+
+  /* Numbered lists in articles - the 5 conditions */
+  .article-content :global(ol) {
+    counter-reset: article-counter;
+    list-style: none;
+    padding-inline-start: 0;
+  }
+
+  .article-content :global(ol > li) {
+    counter-increment: article-counter;
+    position: relative;
+    padding: 1.5rem 2rem;
+    margin: 1rem 0;
+    background: var(--color-bg-card);
+    border-radius: 1rem;
+    border-right: 3px solid var(--color-accent);
+  }
+
+  .article-content :global(ol > li::before) {
+    content: counter(article-counter);
+    position: absolute;
+    top: 1.5rem;
+    left: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+    background: var(--color-accent);
+    color: #0a0a0a;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    font-family: 'Rubik', sans-serif;
+  }
+
+  :global(.light) .article-content :global(ol > li) {
+    background: #f8f5ff;
+  }
+
+  /* Bibliography / References section */
+  .article-content :global(h3:last-of-type ~ ul),
+  .article-content :global(h3:last-of-type ~ ul li) {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    list-style: none;
+    padding-inline-start: 0;
+  }
+
+  .article-content :global(h3:last-of-type ~ ul li) {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+    text-indent: -1.5rem;
+    padding-inline-start: 1.5rem;
+  }
+
+  .article-content :global(h3:last-of-type ~ ul li:last-child) {
+    border-bottom: none;
+  }
+
+  /* Horizontal rules as section dividers */
+  .article-content :global(hr) {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to left, transparent, var(--color-accent), transparent);
+    margin: 3rem 0;
+    opacity: 0.3;
+  }
+
+  /* Drop cap for first paragraph */
+  .article-content :global(> p:first-of-type::first-letter) {
+    font-family: 'Rubik', sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    float: right;
+    line-height: 1;
+    margin-left: 0.5rem;
+    margin-top: 0.1rem;
+    color: var(--color-accent);
+  }
+</style>

@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 
 const allPosts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
-  .filter((post) => post.data.category === 'חינוך' || post.data.category === 'הגיגים')
+  .filter((post) => post.data.category === 'חינוך' || post.data.category === 'הגיגים' || post.data.category === 'מאמרים')
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
