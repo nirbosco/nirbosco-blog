@@ -3,10 +3,118 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  type?: 'website' | 'article';
+  datePublished?: Date;
+  category?: string;
 }
 
-const { title, description = 'ניר בוסקו - איש חינוך, כותב, רדיקל-ממלכתי. על מה שצריך לשבור במערכת החינוך ועל מה שאנחנו בונים במקום.', image } = Astro.props;
+const {
+  title,
+  description = 'ניר בוסקו - איש חינוך, כותב, רדיקל-ממלכתי. על מה שצריך לשבור במערכת החינוך ועל מה שאנחנו בונים במקום.',
+  image,
+  type = 'website',
+  datePublished,
+  category,
+} = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = image
+  ? new URL(image, Astro.site).toString()
+  : new URL('/images/og-default.svg', Astro.site).toString();
+
+// JSON-LD: WebSite schema (always present)
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'ניר בוסקו',
+  url: Astro.site?.toString(),
+  description: 'ניר בוסקו - איש חינוך, כותב, רדיקל-ממלכתי. על מה שצריך לשבור במערכת החינוך ועל מה שאנחנו בונים במקום.',
+  inLanguage: 'he',
+  author: {
+    '@type': 'Person',
+    name: 'ניר בוסקו',
+    url: new URL('/about', Astro.site).toString(),
+  },
+};
+
+// JSON-LD: BlogPosting schema (for articles/posts)
+const articleSchema = type === 'article' && datePublished ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: title.replace(' | ניר בוסקו', ''),
+  description: description,
+  image: ogImage,
+  datePublished: datePublished.toISOString(),
+  dateModified: datePublished.toISOString(),
+  author: {
+    '@type': 'Person',
+    name: 'ניר בוסקו',
+    url: new URL('/about', Astro.site).toString(),
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'ניר בוסקו',
+    url: Astro.site?.toString(),
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': canonicalURL.toString(),
+  },
+  inLanguage: 'he',
+  ...(category && { articleSection: category }),
+} : null;
+
+// JSON-LD: BreadcrumbList schema
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumbItems = [
+  { '@type': 'ListItem', position: 1, name: 'ראשי', item: Astro.site?.toString() },
+];
+if (pathSegments.length > 0) {
+  if (pathSegments[0] === 'blog') {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: 'בלוג',
+      item: new URL('/blog', Astro.site).toString(),
+    });
+    if (pathSegments.length > 1) {
+      breadcrumbItems.push({
+        '@type': 'ListItem',
+        position: 3,
+        name: title.replace(' | ניר בוסקו', ''),
+        item: canonicalURL.toString(),
+      });
+    }
+  } else if (pathSegments[0] === 'about') {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: 'אודות',
+      item: canonicalURL.toString(),
+    });
+  } else if (pathSegments[0] === 'category') {
+    breadcrumbItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: 'בלוג',
+      item: new URL('/blog', Astro.site).toString(),
+    });
+    if (pathSegments.length > 1) {
+      breadcrumbItems.push({
+        '@type': 'ListItem',
+        position: 3,
+        name: decodeURIComponent(pathSegments[1]),
+        item: canonicalURL.toString(),
+      });
+    }
+  }
+}
+
+const breadcrumbSchema = breadcrumbItems.length > 1 ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbItems,
+} : null;
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -20,6 +128,7 @@ import '../styles/global.css';
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
+    <meta name="google-site-verification" content="QUCa_c4pZo5xZBXMMpKaQk5hxpZYIZ-jCYKO9A4iokU" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -34,14 +143,40 @@ import '../styles/global.css';
     <meta name="description" content={description} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type === 'article' ? 'article' : 'website'} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="he_IL" />
+    <meta property="og:site_name" content="ניר בוסקו" />
+    {type === 'article' && datePublished && (
+      <meta property="article:published_time" content={datePublished.toISOString()} />
+    )}
+    {type === 'article' && (
+      <meta property="article:author" content="ניר בוסקו" />
+    )}
+    {type === 'article' && category && (
+      <meta property="article:section" content={category} />
+    )}
+
+    <!-- Twitter/X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- RSS -->
-    <link rel="alternate" type="application/rss+xml" title="nirbosco" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="ניר בוסקו" href="/rss.xml" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    {articleSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    )}
+    {breadcrumbSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    )}
 
     <!-- Theme script (prevent flash) -->
     <script is:inline>

@@ -1,0 +1,7 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0a0a0a"/>
+  <rect x="0" y="580" width="1200" height="50" fill="#c084fc" opacity="0.3"/>
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle" direction="rtl">ניר בוסקו</text>
+  <text x="600" y="350" font-family="Arial, sans-serif" font-size="32" fill="#a1a1aa" text-anchor="middle" direction="rtl">איש חינוך, רדיקל-ממלכתי</text>
+  <text x="600" y="400" font-family="Arial, sans-serif" font-size="24" fill="#c084fc" text-anchor="middle">nirbosco.com</text>
+</svg>
