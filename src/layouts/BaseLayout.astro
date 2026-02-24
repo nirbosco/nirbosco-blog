@@ -190,6 +190,15 @@ import '../styles/global.css';
         document.documentElement.classList.add('light');
       }
     </script>
+
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C23SQ95WEY" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-C23SQ95WEY');
+    </script>
   </head>
   <body class="min-h-screen flex flex-col">
     <Header />
