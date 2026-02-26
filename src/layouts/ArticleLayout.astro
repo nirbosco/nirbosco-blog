@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import CategoryBadge from '../components/CategoryBadge.astro';
+import ShareBar from '../components/ShareBar.astro';
 
 interface Props {
   title: string;
@@ -78,6 +79,13 @@ const formattedDate = new Date(date).toLocaleDateString('he-IL', {
         <div class="article-content prose prose-lg max-w-none">
           <slot />
         </div>
+      </div>
+    </div>
+
+    <!-- Share Bar -->
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="article-grid">
+        <ShareBar title={title} url={Astro.url.href} description={description} />
       </div>
     </div>
 
