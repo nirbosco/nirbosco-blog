@@ -118,16 +118,9 @@
     @apply bg-teal-500/10 text-teal-600;
   }
 
-  /* Light mode prose overrides */
-  .light .prose {
-    --tw-prose-body: #374151;
-    --tw-prose-headings: #111827;
-    --tw-prose-links: #9333ea;
-    --tw-prose-bold: #111827;
-    --tw-prose-quotes: #6b7280;
-    --tw-prose-quote-borders: #9333ea;
-    --tw-prose-hr: #e5e5e5;
-  }
+  /* Light mode prose - inherits from CSS variables automatically */
+  /* All prose colors now use var(--color-*) from tailwind.config */
+  /* The .light class on <html> switches the variables */
 }
 
 /* Animations */
