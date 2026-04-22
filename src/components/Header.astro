@@ -5,6 +5,7 @@ const navLinks = [
   { href: '/', label: 'ראשי' },
   { href: '/blog', label: 'בלוג' },
   { href: '/about', label: 'אודות' },
+  { href: 'https://artemis-kids.vercel.app', label: 'ארטמיס 2', external: true },
 ];
 ---
 
@@ -22,9 +23,11 @@ const navLinks = [
           <li>
             <a
               href={link.href}
+              target={link.external ? '_blank' : undefined}
+              rel={link.external ? 'noopener noreferrer' : undefined}
               class:list={[
                 'nav-link text-sm font-medium pb-1',
-                { 'text-[var(--color-text)] after:w-full': currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)) },
+                { 'text-[var(--color-text)] after:w-full': !link.external && (currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))) },
               ]}
             >
               {link.label}
@@ -69,9 +72,11 @@ const navLinks = [
         <li>
           <a
             href={link.href}
+            target={link.external ? '_blank' : undefined}
+            rel={link.external ? 'noopener noreferrer' : undefined}
             class:list={[
               'block py-2 text-sm font-medium transition-colors',
-              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+              !link.external && (currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href)))
                 ? 'text-[var(--color-accent)]'
                 : 'text-[var(--color-text-muted)] hover:text-[var(--color-text)]',
             ]}
